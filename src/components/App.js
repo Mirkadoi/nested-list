@@ -17,7 +17,7 @@ class App extends Component {
                 { title: 'Тайтл_один_два', checked: false, parent: "1", id: "3", },
                 { title: 'Тайтл_два_два', checked: false, parent: "1", id: "4", },
                 { title: 'Тайтл_один_два_три', checked: false, parent: "3", id: "5", },
-                { title: 'Тайтл_два_два_три', checked: true, parent: "3", id: "6", },
+                { title: 'Тайтл_два_два_три', checked: false, parent: "3", id: "6", },
                 { title: 'Тайтл_три_два_три', checked: false, parent: "3", id: "7", },
             ],
             show: false,
@@ -27,8 +27,7 @@ class App extends Component {
     createTree = (data, parent = "0") => {
         let node = [];
 
-        data
-            .filter((d) => {
+        data.filter((d) => {
                 return d.parent === parent
             })
             .map((d) => {
@@ -40,27 +39,38 @@ class App extends Component {
         return node;
     };
 
-    switchShow = () => this.setState({ show: !this.state.show });
+    showModal = () => this.setState({ show: !this.state.show });
+
+    setTodoState = (newTodo, callback) => this.setState({ todo: newTodo }, callback);
 
     addTodo = (task) => {
         const { value, title } = task;
         const newTask = { title, checked: false, parent: value, id: generateID() };
 
-        this.setState({ todo: [...this.state.todo, newTask] });
-        this.switchShow();
+        this.setTodoState([...this.state.todo, newTask]);
+        this.showModal();
     };
 
     removeTodo = (id) => {
-        const newTodo = this.state.todo.filter((item)=> item.id !== id)
-        this.setState({ todo: newTodo });
+        const newTodo = this.state.todo.filter((item)=> (item.id !== id && item.parent !== id));
+        this.setTodoState(newTodo);
     };
 
-    // sortt = () => {
-    //     const kek = this.state.todo.sort((a, b) => {
-    //                 return a.checked - b.checked;
-    //             });
-    //     this.addTodo(kek);
-    // };
+    checkTodo = (id) => {
+        const newTodo = this.state.todo.map(obj =>
+            obj.id === id ? { ...obj, checked: !obj.checked } : obj
+        );
+
+        this.setTodoState(newTodo, this.sortTodo);
+    };
+
+    sortTodo = () => {
+        const sortTodo = this.state.todo.sort((a, b) => {
+            return a.checked - b.checked;
+        });
+
+        this.setTodoState(sortTodo);
+    };
 
 
     render() {
@@ -74,13 +84,13 @@ class App extends Component {
                 <section>
                     <h1>TodoLIST</h1>
                     <ul>
-                        <List data={todo} createTree={this.createTree} removeTodo={this.removeTodo}/>
+                        <List data={todo} createTree={this.createTree} removeTodo={this.removeTodo} checkTodo={this.checkTodo}/>
                     </ul>
-                    <Button variant="primary" onClick={this.switchShow}>
+                    <Button variant="primary" onClick={this.showModal}>
                         Добавить задачу
                     </Button>
                 </section>
-                <ModalWindow show={show} handleClose={this.switchShow} addTodo={this.addTodo} todo={todo} />
+                <ModalWindow show={show} handleClose={this.showModal} addTodo={this.addTodo} todo={todo} />
             </main>
         );
     }
