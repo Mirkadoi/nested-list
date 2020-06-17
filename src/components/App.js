@@ -3,22 +3,9 @@ import {
     Button,
 } from 'react-bootstrap';
 import ModalWindow from './ModalWindow';
-import NestedList from './NestedList';
+import List from './List';
 import generateID from '../utils/generateID';
 import styles from './App.module.scss';
-
-export function List({ data, createTree }) {
-    const prependTodo = JSON.parse(JSON.stringify(data));
-
-    return createTree(prependTodo).map((item) => {
-        const { id, children } = item;
-        return (
-            <li key={id}>
-                <NestedList node={item} children={children} />
-            </li>
-        );
-    })
-}
 
 class App extends Component {
     constructor(props) {
@@ -55,19 +42,24 @@ class App extends Component {
 
     switchShow = () => this.setState({ show: !this.state.show });
 
-    changeTodo = (task) => {
+    addTodo = (task) => {
         const { value, title } = task;
         const newTask = { title, checked: false, parent: value, id: generateID() };
 
         this.setState({ todo: [...this.state.todo, newTask] });
-        // handleClose();
+        this.switchShow();
+    };
+
+    removeTodo = (id) => {
+        const newTodo = this.state.todo.filter((item)=> item.id !== id)
+        this.setState({ todo: newTodo });
     };
 
     // sortt = () => {
     //     const kek = this.state.todo.sort((a, b) => {
     //                 return a.checked - b.checked;
     //             });
-    //     this.changeTodo(kek);
+    //     this.addTodo(kek);
     // };
 
 
@@ -82,16 +74,13 @@ class App extends Component {
                 <section>
                     <h1>TodoLIST</h1>
                     <ul>
-                        <List data={todo} createTree={this.createTree} />
+                        <List data={todo} createTree={this.createTree} removeTodo={this.removeTodo}/>
                     </ul>
                     <Button variant="primary" onClick={this.switchShow}>
                         Добавить задачу
                     </Button>
-                    <Button variant="primary" onClick={this.sortt}>
-                        Сорт
-                    </Button>
                 </section>
-                <ModalWindow show={show} handleClose={this.switchShow} changeTodo={this.changeTodo} todo={todo} />
+                <ModalWindow show={show} handleClose={this.switchShow} addTodo={this.addTodo} todo={todo} />
             </main>
         );
     }

@@ -5,7 +5,7 @@ import {
     Form
 } from 'react-bootstrap';
 
-const ModalWindow = ({ show, handleClose, todo, changeTodo }) => {
+const ModalWindow = ({ show, handleClose, todo, addTodo }) => {
     const [newTask, setNewTask] = useState({
         title: '',
         value: '0',
@@ -46,7 +46,7 @@ const ModalWindow = ({ show, handleClose, todo, changeTodo }) => {
                 <Button variant="secondary" onClick={handleClose}>
                     Отменить
                 </Button>
-                <Button variant="primary" onClick={() => changeTodo(newTask)} disabled={!newTask.title}>
+                <Button variant="primary" onClick={() => addTodo(newTask)} disabled={!newTask.title}>
                     Добавить
                 </Button>
             </Modal.Footer>
