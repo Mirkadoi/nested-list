@@ -11,10 +11,9 @@ interface Props {
 
 const List: FC<Props> = (props: Props) => {
     const {data, createTree, removeTodo, checkTodo} = props;
-    const prependTodo = JSON.parse(JSON.stringify(data));
-    const treeTodoForm = createTree(prependTodo);
+    const treeFormTodo = createTree(data);
 
-    return <NestedList data={treeTodoForm} removeTodo={removeTodo} checkTodo={checkTodo}/>
+    return <NestedList data={treeFormTodo} removeTodo={removeTodo} checkTodo={checkTodo}/>
 };
 
 export default List;

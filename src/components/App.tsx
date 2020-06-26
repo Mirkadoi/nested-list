@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Button} from 'react-bootstrap';
+
 import ModalWindow from './ModalWindow';
 import List from './List';
 import generateID from '../utils/generateID';
@@ -44,16 +45,16 @@ class App extends Component<Props, State> {
         }
     }
 
-    createTree = (data: Array<ITodoElement>, parent: string = "0") => {
+    createTree = (data: ITodo, parent: string = "0") => {
         let node: ITodo  = [];
 
         data.filter((el: ITodoElement) => {
             return el.parent === parent
         })
-            .map((el: ITodoElement) => {
-                const cd = el;
-                cd.children = this.createTree(data, el.id);
-                return node.push(cd);
+            .forEach((el: ITodoElement) => {
+                el = {...el, children: this.createTree(data, el.id)};
+                node = [...node, el]
+
             });
 
         return node;
