@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {Button} from 'react-bootstrap';
 
 import ModalWindow from './ModalWindow';
-import List from './List';
 import generateID from '../utils/generateID';
 import styles from './App.module.scss';
+import NestedList from "./NestedList";
 
 export type ITodo = Array<ITodoElement>;
 
@@ -104,12 +104,7 @@ class App extends Component<Props, State> {
             <main className={styles.app}>
                 <section>
                     <h1>TodoLIST</h1>
-                    <List
-                        data={todo}
-                        createTree={this.createTree}
-                        removeTodo={this.removeTodo}
-                        checkTodo={this.checkTodo}
-                    />
+                    <NestedList data={this.createTree(todo)} removeTodo={this.removeTodo} checkTodo={this.checkTodo} />
                     <Button variant="primary" onClick={this.showModal}>
                         Добавить задачу
                     </Button>
